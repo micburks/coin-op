@@ -1,0 +1,9 @@
+{
+  "name": "coin-op-monorepo",
+  "description": "Coin-op monorepo",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.13.4"
+  }
+}
