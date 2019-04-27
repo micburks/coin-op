@@ -1,0 +1,15 @@
+{
+  "name": "coin-op",
+  "version": "0.0.0",
+  "description": "Coin-operated state machines",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": ["fsm", "state", "machine"],
+  "author": "Mickey Burks <brks.mck@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "get-some": "^1.0.0"
+  }
+}
