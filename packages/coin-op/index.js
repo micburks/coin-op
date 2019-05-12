@@ -13,18 +13,11 @@ module.exports.Machine = class Machine {
       const currentStep = this.steps[this.state];
       const toStep = this.steps[transition];
 
-      /*
-      console.log('current', currentStep, currentStep && currentStep[target]);
-      console.log('toStep', toStep, this.steps[toStep]);
-      */
-
       let nextStep;
       if (currentStep && currentStep[target]) {
         // { [from]: { [to] } }
-        console.log('calling currentStep')
         nextStep = currentStep[target];
       } else if (toStep) {
-        console.log('calling toStep')
         // { [from.to(to)] }
         nextStep = toStep;
       }
@@ -36,7 +29,7 @@ module.exports.Machine = class Machine {
 
         // TODO: make async
         // Transition
-        this.state = nextStep(...args) || FSM.error; // ?
+        this.state = nextStep(...args) || FSM.error; // fallback to error?
 
         // Entering new current step
         const onEnter = this.steps[this.state.onEnter()];
