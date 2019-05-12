@@ -1,6 +1,6 @@
 {
   "name": "@micburks/coin-op",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Coin-operated state machines",
   "main": "index.js",
   "scripts": {
