@@ -11,7 +11,7 @@ module.exports.Machine = class Machine {
     this.listeners.add(fn);
   }
   unsubscribe(fn) {
-    this.listeners.remove(fn);
+    this.listeners.delete(fn);
   }
   transition(target) {
     return (...args) => {
