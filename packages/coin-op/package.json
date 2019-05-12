@@ -1,12 +1,16 @@
 {
   "name": "coin-op",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Coin-operated state machines",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
   },
-  "keywords": ["fsm", "state", "machine"],
+  "keywords": [
+    "fsm",
+    "state",
+    "machine"
+  ],
   "author": "Mickey Burks <brks.mck@gmail.com>",
   "license": "MIT",
   "dependencies": {
