@@ -1,0 +1,30 @@
+{
+  "name": "@micburks/coin-op-react",
+  "version": "0.0.0",
+  "description": "Coin-operated state machines for react",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "parcel src/index.html",
+    "test": "jest"
+  },
+  "keywords": [
+    "fsm",
+    "state",
+    "machine",
+    "react"
+  ],
+  "author": "Mickey Burks <brks.mck@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@micburks/coin-op": "^0.0.6",
+    "react": "^16.0.0",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0",
+    "parcel": "^1.12.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
