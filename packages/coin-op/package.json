@@ -1,5 +1,5 @@
 {
-  "name": "coin-op",
+  "name": "@micburks/coin-op",
   "version": "0.0.1",
   "description": "Coin-operated state machines",
   "main": "index.js",
@@ -15,5 +15,6 @@
   "license": "MIT",
   "dependencies": {
     "get-some": "^1.0.0"
-  }
+  },
+  "gitHead": "c6b6c6ee14904cad3811e2197c4f871a35121ae7"
 }
