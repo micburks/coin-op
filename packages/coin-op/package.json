@@ -15,5 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "get-some": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
