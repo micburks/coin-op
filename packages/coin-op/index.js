@@ -5,6 +5,13 @@ module.exports.Machine = class Machine {
     this.steps = steps;
     this.state = init;
     this.context = {};
+    this.listeners = new Set();
+  }
+  subscribe(fn) {
+    this.listeners.add(fn);
+  }
+  unsubscribe(fn) {
+    this.listeners.remove(fn);
   }
   transition(target) {
     return (...args) => {
@@ -36,6 +43,10 @@ module.exports.Machine = class Machine {
         onEnter && onEnter(...args);
       } else {
         this.state = FSM.error;
+      }
+      // TODO: is this the right place?
+      for (listener of this.listeners)
+        listener(this.state);
       }
     };
   }
