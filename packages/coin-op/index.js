@@ -45,7 +45,7 @@ module.exports.Machine = class Machine {
         this.state = FSM.error;
       }
       // TODO: is this the right place?
-      for (listener of this.listeners) {
+      for (let listener of this.listeners) {
         listener(this.state);
       }
     };
