@@ -875,10 +875,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@micburks/coin-op@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@micburks/coin-op/-/coin-op-0.0.6.tgz#98070f4b6a275b422aa15684ef9153bf44592950"
-  integrity sha512-Antgoscf5f57oQdmP9GfqrKKsPUWUQ6aix1mhvkMrPh3mAMtX5pH8CXOPDFVolQwmM8CB6gndMbX0VPTvTZ1IA==
+"@micburks/coin-op@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@micburks/coin-op/-/coin-op-0.0.8.tgz#370ffcee01d8f1d7609d056ece94454b3da40b7c"
+  integrity sha512-h9zv3+136/aUS4opPmawQ2PLUnzgPvdiZ9C+QCGC2HNyzU4p27rW2myMhzXvHVvfPC9YEWBG9xNyN9uogYjMpA==
   dependencies:
     get-some "^1.0.0"
 
@@ -3910,9 +3910,9 @@ lodash.uniq@^4.5.0:
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
 lodash@^4.13.1, lodash@^4.17.11, lodash@^4.17.4:
-  version "4.17.11"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
-  integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
+  version "4.17.15"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
 log-symbols@^2.2.0:
   version "2.2.0"
