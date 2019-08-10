@@ -18,12 +18,12 @@ revenue.to(expenses, () => {
   console.log('revenue to expenses');
 });
 
-expenses.onEnter(() => {
-  console.log('on enter called');
+revenue.onEnter(() => {
+  console.log('revenue onEnter called');
 });
 
-expenses.onLeave(() => {
-  console.log('on leave called');
+revenue.onLeave(() => {
+  console.log('revenue onLeave called');
 });
 
 expenses.to(init, () => {

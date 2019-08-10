@@ -22,9 +22,16 @@ export class Machine {
     return () => this.listeners.delete(id);
   }
   async transition(destination, data) {
+    if (!destination instanceof State) {
+      throw new Error('The first argument to transition() must be another `State`');
+    }
     const source = this.state;
     const previousCtx = this.ctx;
-    const transitions = this.state.getTransitions(destination);
+    const transitions = [
+      ...this.state.getTransitions(onLeave),
+      ...this.state.getTransitions(destination),
+      ...destination.getTransitions(onEnter),
+    ];
 
     let newCtx = this.ctx;
     async function setCtx(maybeCallback) {
@@ -67,10 +74,11 @@ export class Machine {
       }
     }
 
-    // onEnter?
-    // onLeave?
+    // TODO: Potential bug here if you need to do cleanup in `onLeave`, but an
+    // exception is thrown in an earlier transition
+    // In this case, the machine transitions to `error` without running `onLeave`
 
-    // Success
+    // Successful transition
     this.state = destination;
     this.ctx = newCtx;
 
