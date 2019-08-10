@@ -7,8 +7,18 @@ const initialCtx = {
 };
 
 const [init, submitting, submitted, error] = createState();
-export const states = {init, submitting, submitted, error};
-export const machine = new Machine(states, {init, error}, initialCtx);
+export const states = {
+  init,
+  submitting,
+  submitted,
+  error
+};
+
+export const machine = new Machine(
+  states,
+  {init, error},
+  initialCtx
+);
 
 // options:
 // calling setState and returning new state
@@ -37,9 +47,10 @@ init.to(submitting, (data, setCtx) => {
 
 submitting.onEnter(async ctx => {
   // fetch(`/something?email=${ctx.email}`)
-  return new Promise(resolve => {
+  const promise = new Promise(resolve => {
     setTimeout(resolve, 2000);
   });
+  await promise;
 });
 
 submitting.to(submitted, (state) => {
