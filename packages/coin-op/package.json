@@ -6,20 +6,25 @@
   "scripts": {
     "test": "node test.js"
   },
+  "author": "Mickey Burks <brks.mck@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/micburks/coin-op/tree/master/packages/coin-op",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/micburks/coin-op.git"
+  },
   "keywords": [
     "fsm",
     "state",
     "machine"
   ],
-  "author": "Mickey Burks <brks.mck@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "get-some": "^1.0.0"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "devDependencies": {
     "chalk": "^2.4.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
