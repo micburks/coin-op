@@ -67,6 +67,9 @@ export class Machine {
       }
     }
 
+    // onEnter?
+    // onLeave?
+
     // Success
     this.state = destination;
     this.ctx = newCtx;

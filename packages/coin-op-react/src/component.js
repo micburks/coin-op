@@ -1,6 +1,8 @@
+// @flow
+
 import React from 'react';
 import {useMachine, State} from './lib.js';
-import {machine as formMachine, states} from './machine.js';
+import {states} from './machine.js';
 
 function SignupForm (props) {
   const [email, setEmail] = React.useState('');
@@ -12,9 +14,13 @@ function SignupForm (props) {
     }
   }
 
+  function handleEmailChange(e) {
+    setEmail(e.target.value);
+  }
+
   return (
     <form onSubmit={submit}>
-      <input type="text" value={email} onChange={setEmail} />
+      <input type="text" value={email} onChange={handleEmailChange} />
       <input type="submit" value="Submit!" />
     </form>
   );
@@ -35,14 +41,18 @@ function Loading () {
 }
 
 export default function MyComponent() {
-  const [ctx, transition] = useMachine(formMachine /*, {}*/); // - alternative? supply initialCtx - for testing?
+  const [ctx, transition] = useMachine(/*, {}*/); // - alternative? supply initialCtx - for testing?
   const {init, submitting, submitted, error} = states;
+
+  React.useEffect(() => {
+    setTimeout(() => transition(error), 5000);
+  });
 
   return (
     <div>
       <State is={init}>
         <p>Welcome!</p>
-        <SignupForm onSubmit={transition.bind(submitting)}/>
+        <SignupForm onSubmit={data => transition(submitting, data)}/>
       </State>
 
       <State is={submitting}>
