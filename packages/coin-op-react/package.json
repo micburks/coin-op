@@ -7,14 +7,19 @@
     "build": "parcel src/index.html",
     "test": "jest"
   },
+  "author": "Mickey Burks <brks.mck@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/micburks/coin-op/tree/master/packages/coin-op-react",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/micburks/coin-op.git"
+  },
   "keywords": [
     "fsm",
     "state",
     "machine",
     "react"
   ],
-  "author": "Mickey Burks <brks.mck@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "@micburks/coin-op": "^0.0.6",
     "react": "^16.0.0",
