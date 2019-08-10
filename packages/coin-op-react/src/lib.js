@@ -1,7 +1,5 @@
 import React from 'react';
 
-export const MachineContext = React.createContext({});
-
 export function useMachine() {
   const machine = React.useContext(MachineContext);
 
@@ -13,8 +11,8 @@ export function State(props) {
   const [state, setState] = React.useState(machine.state);
 
   React.useEffect(() => {
-    machine.subscribe(setState);
-    return () => machine.unsubscribe(setState);
+    const unsubscribe = machine.subscribe(setState);
+    return unsubscribe;
   })
 
   if (state === props.is) {
