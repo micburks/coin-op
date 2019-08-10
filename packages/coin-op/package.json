@@ -1,6 +1,6 @@
 {
   "name": "@micburks/coin-op",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Coin-operated state machines",
   "main": "./dist-node-cjs/index.js",
   "module": "./dist-node-esm/index.js",
