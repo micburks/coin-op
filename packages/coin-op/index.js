@@ -1,17 +1,17 @@
 const store = new Map();
 
+const counter = 0;
 module.exports.Machine = class Machine {
   constructor(steps, init) {
     this.steps = steps;
     this.state = init;
     this.context = {};
-    this.listeners = new Set();
+    this.listeners = new Map();
   }
   subscribe(fn) {
-    this.listeners.add(fn);
-  }
-  unsubscribe(fn) {
-    this.listeners.delete(fn);
+    const id = counter++;
+    this.listeners.set(id, fn);
+    return () => this.listeners.delete(id);
   }
   transition(target) {
     return (...args) => {
@@ -45,7 +45,7 @@ module.exports.Machine = class Machine {
         this.state = FSM.error;
       }
       // TODO: is this the right place?
-      for (let listener of this.listeners) {
+      for (let listener of this.listeners.values()) {
         listener(this.state);
       }
     };
