@@ -1,7 +1,7 @@
 import getSome from 'get-some';
 
 const store = new Map();
-const counter = 0;
+let counter = 0;
 
 export class Machine {
   constructor(steps, keySteps, initialCtx) {
