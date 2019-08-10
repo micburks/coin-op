@@ -24,6 +24,13 @@
     "state",
     "machine"
   ],
+  "files": [
+    "dist-browser-cjs",
+    "dist-browser-esm",
+    "dist-node-cjs",
+    "dist-node-esm",
+    "src"
+  ],
   "dependencies": {
     "get-some": "^1.0.0"
   },
