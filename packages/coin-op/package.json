@@ -2,9 +2,15 @@
   "name": "@micburks/coin-op",
   "version": "0.0.7",
   "description": "Coin-operated state machines",
-  "main": "index.js",
+  "main": "./dist-node-cjs/index.js",
+  "module": "./dist-node-esm/index.js",
+  "browser": {
+    "./dist-node-cjs/index.js": "./dist-browser-cjs/index.js",
+    "./dist-node-esm/index.js": "./dist-browser-esm/index.js"
+  },
   "scripts": {
-    "test": "node test.js"
+    "build": "cup build",
+    "test": "node test/test.js"
   },
   "author": "Mickey Burks <brks.mck@gmail.com>",
   "license": "MIT",
@@ -22,7 +28,8 @@
     "get-some": "^1.0.0"
   },
   "devDependencies": {
-    "chalk": "^2.4.2"
+    "chalk": "^2.4.2",
+    "create-universal-package": "^4.1.0"
   },
   "publishConfig": {
     "access": "public"

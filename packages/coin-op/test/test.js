@@ -1,7 +1,7 @@
 const assert = require('assert');
 const getSome = require('get-some');
-const {Machine, createState} = require('./index.js');
 const chalk = require('chalk');
+const {Machine, createState} = require('..');
 
 const [init, revenue, expenses, error] = createState();
 const states = {init, revenue, expenses, error};

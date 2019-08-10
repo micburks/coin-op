@@ -1,8 +1,9 @@
-const getSome = require('get-some');
-const store = new Map();
+import getSome from 'get-some';
 
+const store = new Map();
 const counter = 0;
-module.exports.Machine = class Machine {
+
+export class Machine {
   constructor(steps, keySteps, initialCtx) {
     if (!keySteps || !keySteps.init) {
       throw new Error('Machine created without specifying `init` step');
@@ -47,6 +48,10 @@ module.exports.Machine = class Machine {
         canProceed = await transition(data, setCtx);
       } catch (e) {
         // error => rollback
+        if (!this.error) {
+          console.error('No error state specified');
+          throw e;
+        }
         this.ctx = previousCtx;
         this.state = this.error;
         this.errorStack.push(e);
@@ -82,7 +87,7 @@ function addToMapArray(map, key, value) {
   }
 }
 
-class State {
+export class State {
   constructor(id) {
     this.id = id;
     this.transitions = new WeakMap();
@@ -104,24 +109,12 @@ class State {
   }
 }
 
-const onEnter = new State();
-const onLeave = new State();
-
-module.exports.createState = function createState(n = 0) {
+export function createState(n = 0) {
   return getSome((i) => {
     return new State(i);
   });
-  /*
-  if (n === 0) {
-    const state = new State();
-    store.set(state, new Map());
-    return state;
-  } else {
-    return [...Array(n)].map(() => {
-      const state = new State();
-      store.set(state, new Map());
-      return state;
-    });
-  }
-  */
 }
+
+const onEnter = new State('onEnter');
+const onLeave = new State('onLeave');
+
