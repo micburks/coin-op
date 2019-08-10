@@ -1,92 +1,117 @@
+const getSome = require('get-some');
 const store = new Map();
 
 const counter = 0;
 module.exports.Machine = class Machine {
-  constructor(steps, init) {
+  constructor(steps, keySteps, initialCtx) {
+    if (!keySteps || !keySteps.init) {
+      throw new Error('Machine created without specifying `init` step');
+    }
     this.steps = steps;
-    this.state = init;
-    this.context = {};
+    this.init = keySteps.init;
+    this.error = keySteps.error;
+    this.state = this.init;
+    this.ctx = initialCtx || {};
     this.listeners = new Map();
+    this.errorStack = [];
   }
   subscribe(fn) {
     const id = counter++;
     this.listeners.set(id, fn);
     return () => this.listeners.delete(id);
   }
-  transition(target) {
-    return (...args) => {
-      const transition = this.state.to(target);
+  async transition(destination, data) {
+    const source = this.state;
+    const previousCtx = this.ctx;
+    const transitions = this.state.getTransitions(destination);
 
-      const currentStep = this.steps[this.state];
-      const toStep = this.steps[transition];
-
-      let nextStep;
-      if (currentStep && currentStep[target]) {
-        // { [from]: { [to] } }
-        nextStep = currentStep[target];
-      } else if (toStep) {
-        // { [from.to(to)] }
-        nextStep = toStep;
-      }
-
-      if (nextStep) {
-        // Leaving current step
-        const onLeave = this.steps[this.state.onLeave()];
-        onLeave && onLeave(...args);
-
-        // TODO: make async
-        // Transition
-        this.state = nextStep(...args) || FSM.error; // fallback to error?
-
-        // Entering new current step
-        const onEnter = this.steps[this.state.onEnter()];
-        onEnter && onEnter(...args);
+    let newCtx = this.ctx;
+    async function setCtx(maybeCallback) {
+      if (typeof maybeCallback === 'function') {
+        const callback = maybeCallback;
+        const maybeNewCtx = await callback(this.ctx);
+        if (maybeNewCtx) {
+          newCtx = {...newCtx, ...maybeNewCtx};
+        }
+      } else if (typeof maybeCallback === 'object') {
+        const ctxPartial = maybeCallback;
+        newCtx = {...newCtx, ...ctxPartial};
       } else {
-        this.state = FSM.error;
+        throw new Error('setCtx must be passed an object or a function');
       }
-      // TODO: is this the right place?
-      for (let listener of this.listeners.values()) {
-        listener(this.state);
+    }
+    
+    for await (const transition of transitions) {
+      let canProceed;
+      try {
+        canProceed = await transition(data, setCtx);
+      } catch (e) {
+        // error => rollback
+        this.ctx = previousCtx;
+        this.state = this.error;
+        this.errorStack.push(e);
+        return;
       }
-    };
+      // undefined => implicit proceed
+      // true => proceed
+      // falsy => rollback
+      if (typeof canProceed !== 'undefined' && !canProceed) {
+        this.ctx = previousCtx;
+        this.state = source;
+        return;
+      }
+    }
+
+    // Success
+    this.state = destination;
+    this.ctx = newCtx;
+
+    for (let listener of this.listeners.values()) {
+      listener(this.state, this.ctx);
+    }
+  };
+}
+
+function addToMapArray(map, key, value) {
+  if (map.has(key)) {
+    const values = map.get(key);
+    values.push(value);
+    map.set(key, values);
+  } else {
+    map.set(key, [value]);
   }
 }
 
 class State {
-  constructor(parentString = null) {
-    const token = Math.random().toString(36).substring(7);
-    if (parentString) {
-      this.asString = `${parentString}-${token}`;
-    } else {
-      this.asString = token;
+  constructor(id) {
+    this.id = id;
+    this.transitions = new WeakMap();
+  }
+  to(destination, transition) {
+    if (!destination instanceof State) {
+      throw new Error('The first argument to state.to() must be another `State`');
     }
+    addToMapArray(this.transitions, destination, transition);
   }
-  to(toState) {
-    return getNestedState(this, toState);
+  onEnter(transition) {
+    addToMapArray(this.transitions, onEnter, transition);
   }
-  toString() {
-    return this.asString;
+  onLeave(transition) {
+    addToMapArray(this.transitions, onLeave, transition);
   }
-  onEnter() {
-    return getNestedState(this, 'enter');
-  }
-  onLeave() {
-    return getNestedState(this, 'leave');
+  getTransitions(destination) {
+    return this.transitions.get(destination) || [];
   }
 }
 
-function getNestedState(from, to) {
-  if (store.has(from)) {
-    const nestedMap = store.get(from);
-    if (!nestedMap.has(to)) {
-      nestedMap.set(to, new State(from.toString()));
-    }
-    return nestedMap.get(to);
-  }
-}
+const onEnter = new State();
+const onLeave = new State();
 
-const FSM = {};
-FSM.createState = function createState(n = 0) {
+module.exports.createState = function createState(n = 0) {
+  return getSome((i) => {
+    return new State(i);
+  });
+  /*
   if (n === 0) {
     const state = new State();
     store.set(state, new Map());
@@ -98,7 +123,5 @@ FSM.createState = function createState(n = 0) {
       return state;
     });
   }
+  */
 }
-FSM.error = FSM.createState();
-FSM.all = FSM.createState();
-module.exports.FSM = FSM;
