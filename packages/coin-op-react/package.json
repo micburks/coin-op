@@ -1,6 +1,6 @@
 {
   "name": "@micburks/coin-op-react",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Coin-operated state machines for react",
   "main": "src/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "react"
   ],
   "dependencies": {
-    "@micburks/coin-op": "^0.0.9",
+    "@micburks/coin-op": "^0.0.10",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },
