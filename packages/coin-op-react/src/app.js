@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 const AppContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
   height: 100%;
   padding-top: 32px;

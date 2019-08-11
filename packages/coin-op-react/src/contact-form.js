@@ -25,9 +25,9 @@ export default function SignupForm (props) {
 
   function submit(e) {
     e.preventDefault();
-    if (email !== '') {
+    // if (email !== '') {
       props.onSubmit({email});
-    }
+    // }
   }
 
   function handleEmailChange(e) {

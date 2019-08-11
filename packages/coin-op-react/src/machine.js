@@ -34,6 +34,7 @@ init.to(submitting, async (data, [ctx, setCtx]) => {});
 init.to(submitting, (data, setCtx) => {
   if (!data.email) {
     return false; // prevent transition
+    // or
     throw new Error('email is required'); // go to error state
   }
   setCtx({
@@ -51,11 +52,10 @@ submitting.onEnter((data, setCtx) => {
     await new Promise(resolve => {
       setTimeout(resolve, 2000);
     });
-    machine.transition(submitted, {name: 'mic'});
+    machine.transition(submitted);
   });
 });
 
 submitting.to(submitted, (data, setCtx) => {
-  setCtx(data);
 });
 

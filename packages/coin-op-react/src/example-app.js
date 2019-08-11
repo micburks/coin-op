@@ -24,6 +24,7 @@ const Header = styled.h1`
   font-weight: 700;
   line-height: 32px;
   padding-bottom: 8px;
+  text-align: ${props => props.center ? 'center' : 'initial'};
   margin: 0;
 `;
 
@@ -52,11 +53,12 @@ export default function ExampleApp() {
       </State>
 
       <State is={submitted}>
-        <Header>Thank you, {ctx.name}!</Header>
+        <Header center={true}>Thank you, {ctx.email}!</Header>
       </State>
 
       <State is={error}>
-        <Header style={{color: 'red'}}>Hmm... there appears to be an error</Header>
+        <Header>Hmm...</Header>
+        <Body style={{color: 'red'}}>There appears to be an error</Body>
       </State>
     </Container>
   );
