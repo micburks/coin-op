@@ -81,6 +81,7 @@ export class Machine {
       this.ctx = previousCtx;
       this.state = this.error;
       this.errorStack.push(e);
+      this.invokeListeners();
       return;
     }
     // undefined => implicit proceed
@@ -89,6 +90,7 @@ export class Machine {
     if (!shouldProceed(canProceed)) {
       this.ctx = previousCtx;
       this.state = source;
+      // this.invokeListeners(); probably don't need to do this
       return;
     }
 
@@ -121,11 +123,13 @@ export class Machine {
     // Successful transition
     this.state = destination;
     this.ctx = newCtx;
-
+    this.invokeListeners();
+  }
+  invokeListeners() {
     for (let listener of this.listeners.values()) {
       listener(this.state, this.ctx);
     }
-  };
+  }
 }
 
 const noop = () => {};
