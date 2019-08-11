@@ -27,18 +27,28 @@ export class Machine {
     }
     const source = this.state;
     const previousCtx = this.ctx;
-    const transitions = [
-      ...this.state.getTransitions(onLeave),
-      ...this.state.getTransitions(destination),
-      ...destination.getTransitions(onEnter),
-    ];
 
     let newCtx = this.ctx;
-    async function setCtx(maybeCallback) {
+    const setCtx = maybeCallback => {
       if (typeof maybeCallback === 'function') {
         const callback = maybeCallback;
-        const maybeNewCtx = await callback(this.ctx);
-        if (maybeNewCtx) {
+        const maybeNewCtx = callback(previousCtx);
+        if (maybeNewCtx instanceof Promise) {
+          const promise = maybeNewCtx;
+          /*
+          promise.then(res => {
+            // TODO: This is probably hacky
+            // It would actually be nice to have historical evidence of what
+            // actions were dispatched - reduxy
+            if (res) {
+              this.ctx = {
+                ...this.ctx,
+                ...res,
+              };
+            }
+          });
+          */
+        } else if (maybeNewCtx) {
           newCtx = {...newCtx, ...maybeNewCtx};
         }
       } else if (typeof maybeCallback === 'object') {
@@ -48,35 +58,65 @@ export class Machine {
         throw new Error('setCtx must be passed an object or a function');
       }
     }
-    
-    for await (const transition of transitions) {
-      let canProceed;
-      try {
-        canProceed = await transition(data, setCtx);
-      } catch (e) {
-        // error => rollback
-        if (!this.error) {
-          console.error('No error state specified');
-          throw e;
-        }
-        this.ctx = previousCtx;
-        this.state = this.error;
-        this.errorStack.push(e);
-        return;
-      }
-      // undefined => implicit proceed
-      // true => proceed
-      // falsy => rollback
-      if (typeof canProceed !== 'undefined' && !canProceed) {
-        this.ctx = previousCtx;
-        this.state = source;
-        return;
-      }
+
+    function shouldProceed(canProceed) {
+      return (typeof canProceed === 'undefined') || canProceed;
     }
+
+    const leaveSource = this.state.getTransition(onLeave);
+    const transition = this.state.getTransition(destination);
+    const enterDestination = destination.getTransition(onEnter);
+
+    let canProceed = true;
+    try {
+      canProceed = leaveSource(data, setCtx);
+      canProceed = shouldProceed(canProceed) && transition(data, setCtx);
+      canProceed = shouldProceed(canProceed) && enterDestination(data, setCtx);
+    } catch (e) {
+      // error => rollback
+      if (!this.error) {
+        console.error('No error state specified');
+        throw e;
+      }
+      this.ctx = previousCtx;
+      this.state = this.error;
+      this.errorStack.push(e);
+      return;
+    }
+    // undefined => implicit proceed
+    // true => proceed
+    // falsy => rollback
+    if (!shouldProceed(canProceed)) {
+      this.ctx = previousCtx;
+      this.state = source;
+      return;
+    }
+
+    // leave
+    // - call without bailing (some might be cleanup?)
+    // - if error was thronw in one, go to error state
+    // - otherwise follow canProceed
+    // - use newCtx for following stpes
+    // transition
+    // - call and bail if one fails
+    // - rollback on canProceed=false
+    // - use newState and newCtx for following stpes
+    // enter
+    // - call and bail if one fails
+    // - rollback on canProceed=false
+    // - commit newState and newCtx
+
+    // async setCtx
+
+    // TODO: add support for multiple callbacks?
 
     // TODO: Potential bug here if you need to do cleanup in `onLeave`, but an
     // exception is thrown in an earlier transition
     // In this case, the machine transitions to `error` without running `onLeave`
+
+    // Right now just letting the promise go and assuming the user will call
+    // `transition` from there to the next state
+    // No way to cancel this right now
 
     // Successful transition
     this.state = destination;
@@ -88,16 +128,7 @@ export class Machine {
   };
 }
 
-function addToMapArray(map, key, value) {
-  if (map.has(key)) {
-    const values = map.get(key);
-    values.push(value);
-    map.set(key, values);
-  } else {
-    map.set(key, [value]);
-  }
-}
-
+const noop = () => {};
 export class State {
   constructor(id) {
     this.id = id;
@@ -107,16 +138,16 @@ export class State {
     if (!destination instanceof State) {
       throw new Error('The first argument to state.to() must be another `State`');
     }
-    addToMapArray(this.transitions, destination, transition);
+    this.transitions.set(destination, transition);
   }
   onEnter(transition) {
-    addToMapArray(this.transitions, onEnter, transition);
+    this.transitions.set(onEnter, transition);
   }
   onLeave(transition) {
-    addToMapArray(this.transitions, onLeave, transition);
+    this.transitions.set(onLeave, transition);
   }
-  getTransitions(destination) {
-    return this.transitions.get(destination) || [];
+  getTransition(destination) {
+    return this.transitions.get(destination) || noop;
   }
 }
 

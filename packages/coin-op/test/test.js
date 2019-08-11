@@ -15,14 +15,24 @@ revenue.to(init, () => {
 });
 
 revenue.to(expenses, () => {
+  // await someLaterThing();
+  // prevents transition but this is what onEnter/onLeave and intermediate states are for
   console.log('revenue to expenses');
 });
 
+let revenueSocket;
+class Socket { destroy() {} }
+
 revenue.onEnter(() => {
+  revenueSocket = new Socket();
   console.log('revenue onEnter called');
 });
 
 revenue.onLeave(() => {
+  if (revenueSocket) {
+    revenueSocket.destroy();
+    revenueSocket = null
+  }
   console.log('revenue onLeave called');
 });
 
