@@ -45,15 +45,17 @@ init.to(submitting, (data, setCtx) => {
   // }));
 });
 
-submitting.onEnter(async ctx => {
+submitting.onEnter((data, setCtx) => {
   // fetch(`/something?email=${ctx.email}`)
-  const promise = new Promise(resolve => {
-    setTimeout(resolve, 2000);
+  setCtx(async (ctx) => {
+    await new Promise(resolve => {
+      setTimeout(resolve, 2000);
+    });
+    machine.transition(submitted, {name: 'mic'});
   });
-  await promise;
 });
 
-submitting.to(submitted, (state) => {
-  return true;
+submitting.to(submitted, (data, setCtx) => {
+  setCtx(data);
 });
 
